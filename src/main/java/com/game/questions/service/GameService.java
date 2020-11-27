@@ -100,39 +100,36 @@ public class GameService {
 
     public StatisticsResponse getGameStatistics(int gameId) {
         Game game = gameRepository.findById(gameId).orElse(null);
-       List<StatisticsResponse.UserStats> userStatsList = new ArrayList<>();
+        List<User> users = game.getUsersBelongToGame();
+        List<StatisticsResponse.UserStats> userStatsList = new ArrayList<>();
+
+        game.getRoundList().forEach(round ->
+                round.getAnswers().forEach(answer -> {
+                    StatisticsResponse.UserStats userStats = new StatisticsResponse.UserStats();
+                    userStats.setVotes(answer.getVotesBelongToAnswer().size());
+                    userStats.setName(answer.getBelongsToUser().getName());
+                    userStats.setId(answer.getBelongsToUser().getId());
+                    userStats.setPlace(0);
+                    userStatsList.add(userStats);
+                }));
+
         List<StatisticsResponse.UserStats> userStatsListNew = new ArrayList<>();
-        game.getRoundList().forEach(round -> {
-            round.getAnswers().forEach(answer -> {
-                StatisticsResponse.UserStats userStats = new StatisticsResponse.UserStats();
-                userStats.setVotes(answer.getVotesBelongToAnswer().size());
-                userStats.setName(answer.getBelongsToUser().getName());
-                userStats.setId(answer.getBelongsToUser().getId());
-                userStats.setPlace(0);
-                userStatsList.add(userStats);
-                if (userStatsList.stream().filter(u -> u.getId() == userStats.getId()).count() < 1) {
-                    userStatsListNew.add(userStats);
-                } else {
-                    StatisticsResponse.UserStats us = userStatsList.stream().filter(u -> u.getId()
-                            == userStats.getId()).findFirst().orElse(null);
-                    StatisticsResponse.UserStats userStats2 = new StatisticsResponse.UserStats();
-                    userStats2.setId(us.getId());
-                    userStats2.setName(us.getName());
-                    userStats2.setVotes(us.getVotes() + userStats.getVotes());
-                    userStats2.setPlace(1);
-                    userStatsListNew.remove(userStatsListNew.stream().filter(u -> u.getId()
-                            == userStats.getId()).findFirst().orElse(null));
-                    userStatsListNew.add(userStats2);
-                }
+        users.forEach(user -> {
+            int userVotes = userStatsList.stream().filter(userStats -> userStats.getId() == user.getId()).mapToInt(u -> u.getVotes()).sum();
+            StatisticsResponse.UserStats userStats = new StatisticsResponse.UserStats();
+            userStats.setVotes(userVotes);
+            userStats.setName(user.getName());
+            userStats.setId(user.getId());
+            userStats.setPlace(0);
+            userStatsListNew.add(userStats);
+        });
 
-            });
-
-        } );
         StatisticsResponse statisticsResponse = new StatisticsResponse();
-        userStatsListNew.sort(Comparator.comparing(StatisticsResponse.UserStats::getVotes));
-        userStatsListNew.forEach(us -> us.setPlace(us.getPlace() + 1));
+        userStatsListNew.sort(Comparator.comparing(StatisticsResponse.UserStats::getVotes).reversed());
+        userStatsListNew.forEach(us -> us.setPlace(userStatsListNew.indexOf(us) + 1));
         statisticsResponse.setUserStats(userStatsListNew);
+
         return statisticsResponse;
-}
+    }
 
 }
