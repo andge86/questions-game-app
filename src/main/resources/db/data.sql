@@ -1,4 +1,10 @@
-INSERT INTO questions (description) VALUES ('What current user wants right now?');
-INSERT INTO questions (description) VALUES ('What was current user the biggest dream?');
-INSERT INTO questions (description) VALUES ('Why current user is in UAE?');
-INSERT INTO questions (description) VALUES ('What do you like in current user?');
+INSERT INTO questions (description) VALUES ('What name1 wants right now?');
+INSERT INTO questions (description) VALUES ('What is the biggest dream of name1?');
+INSERT INTO questions (description) VALUES ('Why name1 likes UAE?');
+INSERT INTO questions (description) VALUES ('Why name1 dislikes UAE?');
+INSERT INTO questions (description) VALUES ('What do you like in name1?');
+INSERT INTO questions (description) VALUES ('What do you dislike in name1?');
+INSERT INTO questions (description) VALUES ('What do you dislike in name1?');
+INSERT INTO questions (description) VALUES ('What name1 would do with name2 if they would be alone at home?');
+INSERT INTO questions (description) VALUES ('What name1 would buy in sexshop?');
+INSERT INTO questions (description) VALUES ('What name1 would buy in sexshop as a gift for name2?');

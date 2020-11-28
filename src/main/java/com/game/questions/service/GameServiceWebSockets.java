@@ -83,8 +83,24 @@ public class GameServiceWebSockets {
     public Game changeGameState(int gameId, String state) {
         Game game = gameRepository.findById(gameId).orElse(null);
         game.setState(state);
+        randomizeNamesInQuestions(game);
 
         return gameRepository.save(game);
+    }
+
+    public void randomizeNamesInQuestions(Game game) {
+        List<String> userNames = game.getUsersBelongToGame()
+                .stream().map(user -> user.getName()).collect(Collectors.toList());
+      //  List<Round> roundList = new ArrayList<>();
+        game.getRoundList().forEach(round -> {
+            Collections.shuffle(userNames);
+            String questionText = round.getQuestion().getDescription()
+                    .replaceAll("name1", userNames.subList(0, 2).get(0))
+                    .replaceAll("name2", userNames.subList(0, 2).get(1));
+            round.setQuestionText(questionText);
+          //  roundList.add(round);
+            roundRepository.save(round);
+        });
     }
 
     public Game addUserToGame(int gameId, int userId) {

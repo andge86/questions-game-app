@@ -26,6 +26,9 @@ public class Round {
     @JoinColumn(name = "question_id", referencedColumnName = "id")
     private Question question;
 
+    @Column(name = "question_text")
+    private String questionText;
+
     @OneToMany(targetEntity = Answer.class)
     @JoinColumn(name = "belongs_to_round_id", referencedColumnName = "id")
     private List<Answer> answers = new ArrayList<>();

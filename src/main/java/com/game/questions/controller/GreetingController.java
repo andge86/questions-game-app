@@ -66,7 +66,6 @@ public class GreetingController {
         Game game = gameServiceWebSockets.changeGameState(
                 startGameRequest.getStartGameParams().getGameId(),
                 "ACTIVE");
-
         return new GameResponse(startGameRequest.getType(), game);
     }
 
